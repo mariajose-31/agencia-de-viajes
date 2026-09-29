@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hacer Compra - Viajaseguro</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #000080, #1e3a8a);
+      color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    header .options {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    header .options button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 25px;
+      background-color: #6495ED;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    header .options button:hover {
+      background-color: #4169E1;
+      transform: translateY(-2px);
+    }
+    header .options button.active {
+      background-color: #FFA500;
+      box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+    }
+    header .discount {
+      background: linear-gradient(135deg, #2E8B57, #3CB371);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 25px;
+      margin-left: auto;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Contenedor principal */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    /* Tarjetas de información */
+    .info-banner {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .info-banner i {
+      font-size: 24px;
+    }
+
+    /* Formulario */
+    form {
+      padding: 30px;
+      background-color: white;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      border-radius: 16px;
+      margin-bottom: 30px;
+    }
+
+    .form-section {
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid #eee;
+    }
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .form-section-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #000080;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    form .form-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    form .form-group > div {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    form label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+      color: #1f2937;
+      font-size: 0.95rem;
+    }
+
+    form select,
+    form input[type="date"],
+    form input[type="number"] {
+      padding: 12px 15px;
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      background-color: #fff;
+    }
+
+    form select:focus,
+    form input[type="date"]:focus,
+    form input[type="number"]:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    /* Sección de paquetes turísticos */
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .package-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+
+    .package-card:hover,
+    .package-card.selected {
+      border-color: #FFA500;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 165, 0, 0.2);
+    }
+
+    .package-card h4 {
+      margin: 0 0 8px 0;
+      color: #000080;
+      font-size: 1.1rem;
+    }
+
+    .package-card .hotel {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
+
+    .package-card .price {
+      font-weight: bold;
+      color: #2E8B57;
+      font-size: 1.1rem;
+    }
+
+    .package-card .includes {
+      font-size: 0.85rem;
+      color: #4b5563;
+      margin-top: 8px;
+    }
+
+    /* Botones */
+    .button-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    form .reserve-button {
+      background: linear-gradient(135deg, #FF4500, #FF6347);
+      color: white;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+    }
+
+    form .reserve-button:hover {
+      background: linear-gradient(135deg, #FF6347, #FF7F50);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 69, 0, 0.4);
+    }
+
+    .secondary-button {
+      background: #6b7280;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .secondary-button:hover {
+      background: #4b5563;
+    }
+
+    /* Mensajes */
+    .success-message {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      text-align: center;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .error-message {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      text-align: center;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 30px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .popup h3 {
+      color: #2E8B57;
+      margin: 0 0 15px 0;
+      font-size: 1.4rem;
+    }
+
+    .popup p {
+      margin: 0 0 20px 0;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .popup button {
+      margin-top: 10px;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #000080, #1e40af);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .popup button:hover {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      transform: translateY(-2px);
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      form .form-group {
+        flex-direction: column;
+      }
+
+      header .options {
+        justify-content: center;
+      }
+
+      header .discount {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      form .reserve-button {
+        width: 100%;
+      }
+    }
+
+    /* Iconos simples con emojis */
+    .icon {
+      font-size: 1.2rem;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Encabezado -->
+<header>
+  <div class="options">
+    <span><strong>Vuelos</strong></span>
+    <button class="active">🔄 Ida y vuelta</button>
+    <button>➡️ Solo ida</button>
+    <button>🗺️ Multidestino</button>
+    <span>|</span>
+    <button class="discount">🎁 Hasta 30% de ahorro</button>
+    <button onclick="window.location.href='/ver-reservas'">📋 Ver viajes reservados</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Banner informativo -->
+  <div class="info-banner">
+    <span class="icon">✈️</span>
+    <div>
+      <strong>Conectamos Colombia con las mejores aerolíneas:</strong>
+      Avianca, LATAM, Wingo, SATENA, JetSmart, Copa Airlines y Arajet [[1]][[4]]
+    </div>
+  </div>
+
+  <!-- Mensaje de éxito -->
+  <div th:if="${mensajeReserva}" class="success-message">
+    ✅ [[${mensajeReserva}]]
+  </div>
+
+  <!-- Mensaje de error (opcional) -->
+  <div th:if="${errorReserva}" class="error-message">
+    ⚠️ [[${errorReserva}]]
+  </div>
+
+  <!-- Formulario de reserva -->
+  <form action="/reservar-vuelo" method="post" id="bookingForm">
+
+    <!-- Sección 1: Rutas y Aerolíneas -->
+    <div class="form-section">
+      <div class="form-section-title">📍 Ruta y Aerolínea</div>
+      <div class="form-group">
+        <!-- Origen -->
+        <div>
+          <label for="origen">🛫 Ciudad de origen</label>
+          <select id="origen" name="origen" required>
+            <option value="">Seleccionar origen</option>
+            <option value="BOG">Bogotá (BOG) - El Dorado</option>
+            <option value="MDE">Medellín (MDE) - José María Córdova</option>
+            <option value="CLO">Cali (CLO) - Alfonso Bonilla Aragón</option>
+            <option value="CTG">Cartagena (CTG) - Rafael Núñez</option>
+            <option value="BAQ">Barranquilla (BAQ) - Ernesto Cortissoz</option>
+            <option value="SMR">Santa Marta (SMR) - Simón Bolívar</option>
+            <option value="ADZ">San Andrés (ADZ) - Gustavo Rojas Pinilla</option>
+            <option value="PEI">Pereira (PEI) - Matecaña</option>
+            <option value="BGA">Bucaramanga (BGA) - Palonegro</option>
+            <option value="CUC">Cúcuta (CUC) - Camilo Daza</option>
+            <option value="LET">Leticia (LET) - Amazonas</option>
+            <option value="AXM">Armenia (AXM) - El Edén</option>
+            <option value="MTR">Montería (MTR) - Los Garzones</option>
+            <option value="VVC">Villavicencio (VVC) - Vanguardia</option>
+            <option value="TCO">Tumaco (TCO) - La Florida</option>
+          </select>
+        </div>
+
+        <!-- Destino -->
+        <div>
+          <label for="destino">🛬 Ciudad de destino</label>
+          <select id="destino" name="destino" required>
+            <option value="">Seleccionar destino</option>
+            <option value="BOG">Bogotá (BOG) - El Dorado</option>
+            <option value="MDE">Medellín (MDE) - José María Córdova</option>
+            <option value="CLO">Cali (CLO) - Alfonso Bonilla Aragón</option>
+            <option value="CTG">Cartagena (CTG) - Rafael Núñez</option>
+            <option value="BAQ">Barranquilla (BAQ) - Ernesto Cortissoz</option>
+            <option value="SMR">Santa Marta (SMR) - Simón Bolívar</option>
+            <option value="ADZ">San Andrés (ADZ) - Gustavo Rojas Pinilla</option>
+            <option value="PEI">Pereira (PEI) - Matecaña</option>
+            <option value="BGA">Bucaramanga (BGA) - Palonegro</option>
+            <option value="CUC">Cúcuta (CUC) - Camilo Daza</option>
+            <option value="LET">Leticia (LET) - Amazonas</option>
+            <option value="AXM">Armenia (AXM) - El Edén</option>
+            <option value="MTR">Montería (MTR) - Los Garzones</option>
+            <option value="VVC">Villavicencio (VVC) - Vanguardia</option>
+            <option value="TCO">Tumaco (TCO) - La Florida</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Aerolínea -->
+      <div style="margin-top: 15px;">
+        <label for="aerolinea">✈️ Selecciona tu aerolínea preferida</label>
+        <select id="aerolinea" name="aerolinea" required>
+          <option value="">Seleccionar aerolínea</option>
+          <option value="avianca">🇨🇴 Avianca - Líder en rutas nacionales (43% del mercado) [[1]]</option>
+          <option value="latam">🇨🇱 LATAM Airlines - Conexiones internacionales [[2]][[6]]</option>
+          <option value="wingo">🇨🇴 Wingo - Low cost con cobertura nacional [[10]]</option>
+          <option value="satena">🇨🇴 SATENA - Conectando regiones apartadas [[3]][[5]]</option>
+          <option value="jetsmart">🇨🇱 JetSmart - Precios bajos, nuevas rutas [[4]]</option>
+          <option value="copa">🇵🇦 Copa Airlines - Hub de las Américas</option>
+          <option value="arajet">🇩🇴 Arajet - Crecimiento en conectividad regional</option>
+          <option value="cualquiera">🎲 Cualquier aerolínea (mejor precio)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Sección 2: Fechas y Pasajeros -->
+    <div class="form-section">
+      <div class="form-section-title">📅 Fechas y Pasajeros</div>
+      <div class="form-group">
+        <div>
+          <label for="fecha-ida">🗓️ Fecha de ida</label>
+          <input type="date" id="fecha-ida" name="fechaIda" required>
+        </div>
+        <div>
+          <label for="fecha-vuelta">🗓️ Fecha de vuelta</label>
+          <input type="date" id="fecha-vuelta" name="fechaVuelta" required>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 15px;">
+        <div>
+          <label for="pasajeros">👥 Pasajeros y clase</label>
+          <select id="pasajeros" name="pasajeros">
+            <option value="1-economica">1 adulto • Económica</option>
+            <option value="2-economica">2 adultos • Económica</option>
+            <option value="3-economica">3 adultos • Económica</option>
+            <option value="4-economica">4 adultos • Económica</option>
+            <option value="1-premium">1 adulto • Premium Economy</option>
+            <option value="2-premium">2 adultos • Premium Economy</option>
+            <option value="1-business">1 adulto • Business Class</option>
+            <option value="2-business">2 adultos • Business Class</option>
+          </select>
+        </div>
+        <div>
+          <label for="equipaje">🧳 Equipaje adicional</label>
+          <select id="equipaje" name="equipaje">
+            <option value="0">Sin equipaje extra (solo mano)</option>
+            <option value="1">+1 maleta de bodega (23kg)</option>
+            <option value="2">+2 maletas de bodega (23kg c/u)</option>
+            <option value="deportivo">Equipo deportivo (+$45.000)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección 3: Paquetes Turísticos con Hoteles -->
+    <div class="form-section">
+      <div class="form-section-title">🏨 Paquetes Turísticos con Hoteles (Opcional)</div>
+      <p style="margin-bottom: 10px; color: #6b7280; font-size: 0.95rem;">
+        ✨ Agrega alojamiento y experiencias a tu viaje. Los paquetes incluyen <strong>vuelo + hotel + impuestos</strong> [[11]].
+      </p>
+
+      <div class="packages-grid">
+        <!-- Cartagena -->
+        <label class="package-card" onclick="selectPackage(this, 'cartagena-lujo')">
+          <input type="radio" name="paquete" value="cartagena-lujo" style="display: none;">
+          <h4>🏖️ Cartagena Colonial</h4>
+          <div class="hotel">🏨 Charleston Santa Teresa / Hotel Casa Legado [[15]][[22]]</div>
+          <div class="price">Desde $450.000 COP/noche</div>
+          <div class="includes">✅ Desayuno • ✅ Tour Ciudad Amurallada • ✅ Traslados</div>
+        </label>
+
+        <!-- San Andrés -->
+        <label class="package-card" onclick="selectPackage(this, 'sanandres-playa')">
+          <input type="radio" name="paquete" value="sanandres-playa" style="display: none;">
+          <h4>🌊 San Andrés Todo Incluido</h4>
+          <div class="hotel">🏨 Decameron Aquarium / Hotel Casablanca [[19]][[24]]</div>
+          <div class="price">Desde $380.000 COP/noche</div>
+          <div class="includes">✅ Todo incluido • ✅ Snorkel • ✅ Transporte isla</div>
+        </label>
+
+        <!-- Medellín -->
+        <label class="package-card" onclick="selectPackage(this, 'medellin-urbano')">
+          <input type="radio" name="paquete" value="medellin-urbano" style="display: none;">
+          <h4>🌸 Medellín Experiencia</h4>
+          <div class="hotel">🏨 Click Clack Hotel / The Charlee Hotel [[14]][[20]]</div>
+          <div class="price">Desde $320.000 COP/noche</div>
+          <div class="includes">✅ Desayuno • ✅ Tour Comuna 13 • ✅ Metrocable</div>
+        </label>
+
+        <!-- Eje Cafetero -->
+        <label class="package-card" onclick="selectPackage(this, 'cafetero-naturaleza')">
+          <input type="radio" name="paquete" value="cafetero-naturaleza" style="display: none;">
+          <h4>☕ Eje Cafetero & Naturaleza</h4>
+          <div class="hotel">🏨 Cannúa Lodge / Hotel Bambuco [[14]][[25]]</div>
+          <div class="price">Desde $290.000 COP/noche</div>
+          <div class="includes">✅ Desayuno típico • ✅ Recorrido finca cafetera • ✅ Termales</div>
+        </label>
+
+        <!-- Santa Marta -->
+        <label class="package-card" onclick="selectPackage(this, 'santamarta-tayrona')">
+          <input type="radio" name="paquete" value="santamarta-tayrona" style="display: none;">
+          <h4>🏔️ Santa Marta & Tayrona</h4>
+          <div class="hotel">🏨 Hotel Las Américas Casa de Playa / Sofitel Barú [[12]][[26]]</div>
+          <div class="price">Desde $410.000 COP/noche</div>
+          <div class="includes">✅ Desayuno • ✅ Entrada Parque Tayrona • ✅ Playa privada</div>
+        </label>
+
+        <!-- Bogotá -->
+        <label class="package-card" onclick="selectPackage(this, 'bogota-cultural')">
+          <input type="radio" name="paquete" value="bogota-cultural" style="display: none;">
+          <h4>🎭 Bogotá Cultural</h4>
+          <div class="hotel">🏨 Four Seasons Casa Medina / JW Marriott Bogotá [[13]][[21]]</div>
+          <div class="price">Desde $350.000 COP/noche</div>
+          <div class="includes">✅ Desayuno • ✅ Tour Museo del Oro • ✅ Monserrate</div>
+        </label>
+      </div>
+
+      <!-- Input oculto para enviar el paquete seleccionado -->
+      <input type="hidden" id="paqueteSeleccionado" name="paqueteSeleccionado" value="">
+    </div>
+
+    <!-- Sección 4: Resumen y Reserva -->
+    <div class="form-section">
+      <div class="form-section-title">💳 Resumen de Reserva</div>
+      <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+        <p style="margin: 5px 0;"><strong>📋 Incluye:</strong></p>
+        <ul style="margin: 10px 0 0 20px; color: #4b5563; font-size: 0.95rem;">
+          <li>Vuelo redondo con la aerolínea seleccionada</li>
+          <li>Equipaje de mano incluido (10kg)</li>
+          <li>Check-in online y boarding pass digital</li>
+          <li th:if="${paqueteSeleccionado}">🎁 Paquete turístico con hotel y experiencias</li>
+          <li>🛡️ Seguro de viaje básico (cancelación gratuita hasta 24h)</li>
+        </ul>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="reserve-button">✨ Reservar Ahora</button>
+        <button type="button" class="secondary-button" onclick="simularBusqueda()">🔍 Simular búsqueda</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- Popup de confirmación -->
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+  <h3>✅ ¡Reserva Exitosa!</h3>
+  <p>Tu vuelo y paquete turístico han sido registrados correctamente. Recibirás un correo de confirmación con tus detalles de viaje.</p>
+  <button onclick="window.location.href='/ver-reservas'">📋 Ver mi viaje</button>
+</div>
+
+<!-- Scripts -->
+<script>
+  // Función para seleccionar paquete turístico
+  function selectPackage(element, packageValue) {
+    // Remover selección previa
+    document.querySelectorAll('.package-card').forEach(card => {
+      card.classList.remove('selected');
+    });
+
+    // Agregar selección actual
+    element.classList.add('selected');
+
+    // Actualizar input oculto
+    document.getElementById('paqueteSeleccionado').value = packageValue;
+
+    // Marcar el radio button
+    element.querySelector('input[type="radio"]').checked = true;
+  }
+
+  // Validar fechas: vuelta debe ser después de ida
+  document.addEventListener("DOMContentLoaded", function () {
+    const fechaIda = document.getElementById('fecha-ida');
+    const fechaVuelta = document.getElementById('fecha-vuelta');
+
+    // Establecer fecha mínima como hoy
+    const hoy = new Date().toISOString().split('T')[0];
+    fechaIda.min = hoy;
+    fechaVuelta.min = hoy;
+
+    // Actualizar fecha mínima de vuelta cuando cambia la ida
+    fechaIda.addEventListener('change', function() {
+      fechaVuelta.min = this.value;
+      if (fechaVuelta.value && fechaVuelta.value < this.value) {
+        fechaVuelta.value = this.value;
+      }
+    });
+
+    // Mostrar popup si la reserva fue exitosa (parámetro en URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const reservaExitosa = urlParams.get('reservaExitosa');
+    if (reservaExitosa === 'true') {
+      const overlay = document.getElementById('overlay');
+      const popup = document.getElementById('popup');
+      overlay.style.display = 'block';
+      popup.style.display = 'block';
+    }
+
+    // Cerrar popup al hacer clic en el overlay
+    document.getElementById('overlay').addEventListener('click', function() {
+      this.style.display = 'none';
+      document.getElementById('popup').style.display = 'none';
+    });
+  });
+
+  // Función para simular búsqueda (demo)
+  function simularBusqueda() {
+    const origen = document.getElementById('origen').value;
+    const destino = document.getElementById('destino').value;
+    const fechaIda = document.getElementById('fecha-ida').value;
+
+    if (!origen || !destino || !fechaIda) {
+      alert('⚠️ Por favor completa origen, destino y fecha de ida para simular la búsqueda.');
+      return;
+    }
+
+    // Simular carga
+    const btn = document.querySelector('.reserve-button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '🔄 Buscando mejores opciones...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      alert(`✅ ¡Búsqueda simulada!\n\n🛫 ${origen} → 🛬 ${destino}\n📅 Ida: ${fechaIda}\n\n💡 En un entorno real, aquí verías las opciones de vuelos y precios de las aerolíneas seleccionadas.`);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 1500);
+  }
+
+  // Prevenir envío si no hay selección válida (validación adicional)
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    const origen = document.getElementById('origen').value;
+    const destino = document.getElementById('destino').value;
+
+    if (origen === destino) {
+      e.preventDefault();
+      alert('⚠️ El origen y destino no pueden ser la misma ciudad. Por favor selecciona rutas diferentes.');
+      return false;
+    }
+
+    // Mostrar mensaje de "procesando"
+    const btn = document.querySelector('.reserve-button');
+    btn.innerHTML = '⏳ Procesando reserva...';
+    btn.disabled = true;
+  });
+</script>
+
+</body>
+</html>

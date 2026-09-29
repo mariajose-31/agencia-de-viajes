@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido - Viajaseguro</title>
+
+  <!-- Agregar la fuente de Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('https://wallpapers.com/images/high/747-airplane-3fj378yn99dm3zns.webp'); /* Nueva imagen de fondo */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+    }
+    .container {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+    }
+    h1 {
+      font-family: 'Bebas Neue', cursive; /* Aplicar la nueva fuente */
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Efecto de sombra */
+      letter-spacing: 2px; /* Espaciado entre letras */
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .button {
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .button-primary {
+      background-color: #007BFF; /* Azul brillante */
+    }
+    .button-secondary {
+      background-color: #28A745; /* Verde */
+    }
+    .button-primary:hover {
+      background-color: #0056b3; /* Azul oscuro */
+    }
+    .button-secondary:hover {
+      background-color: #1e7e34; /* Verde oscuro */
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Bienvenido a Viajaseguro</h1>
+  <p>Descubre destinos increíbles y reserva tus próximas aventuras.</p>
+  <div class="buttons">
+    <a href="/login"><button class="button button-primary">Iniciar Sesión</button></a>
+    <a href="/register"><button class="button button-secondary">Registrarse</button></a>
+  </div>
+</div>
+</body>
+</html>

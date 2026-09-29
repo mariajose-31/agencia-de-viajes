@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - Viajaseguro</title>
+  <style>
+    /* =============================== */
+    /* 🌟 ESTILOS GLOBALES */
+    /* =============================== */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input[type="text"],
+    input[type="password"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+    }
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .mensaje {
+      color: green;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    p {
+      margin-top: 15px;
+    }
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Iniciar Sesión</h2>
+  <!-- Mensaje de éxito si el usuario se registró previamente -->
+  <div th:if="${param.registroExitoso}" class="mensaje">
+    ¡Usuario registrado con éxito! Ahora puedes iniciar sesión.
+  </div>
+  <!-- Formulario de inicio de sesión -->
+  <form id="loginForm">
+    <!-- Campo de correo electrónico o nombre de usuario -->
+    <label for="emailOrUsername">Correo Electrónico o Usuario</label>
+    <input type="text" id="emailOrUsername" name="emailOrUsername" placeholder="Correo o Usuario" required>
+    <p class="error-message" id="emailError"></p>
+
+    <!-- Campo de contraseña -->
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="password" placeholder="Contraseña" required>
+    <p class="error-message" id="passwordError"></p>
+
+    <!-- Botón de inicio de sesión -->
+    <button type="submit">Iniciar Sesión</button>
+  </form>
+  <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
+</div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Evitar el envío del formulario por defecto
+
+    // Obtener los valores del formulario
+    const emailOrUsername = document.getElementById('emailOrUsername').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    // Validar que todos los campos estén llenos
+    if (!emailOrUsername || !password) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
+    // Crear un objeto con los datos del formulario
+    const formData = {
+      emailOrUsername: emailOrUsername,
+      password: password
+    };
+
+    try {
+      // Enviar los datos al backend usando fetch
+      const response = await fetch('/api/login', { // Endpoint corregido
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        // Redirigir al dashboard después de un inicio de sesión exitoso
+        window.location.href = '/principal'; // Redirección corregida
+      } else {
+        // Mostrar mensaje de error si algo falla
+        const data = await response.json();
+        alert(data.error || 'Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ocurrió un error inesperado. Por favor, inténtalo más tarde.');
+    }
+  });
+</script>
+</body>
+</html>

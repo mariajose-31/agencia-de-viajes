@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - Viajaseguro</title>
+  <style>
+    /* =============================== */
+    /* 🌟 ESTILOS GLOBALES */
+    /* =============================== */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+    legend {
+      font-weight: bold;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+    }
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .mensaje-exito {
+      color: green;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    p {
+      margin-top: 15px;
+    }
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Registro</h2>
+  <!-- Mensaje de éxito si el usuario se registró correctamente -->
+  <div th:if="${param.registroExitoso}" class="mensaje-exito">
+    ¡Usuario registrado con éxito! Redirigiendo al inicio de sesión...
+  </div>
+  <!-- Formulario de registro -->
+  <form id="registerForm">
+    <!-- Información Personal -->
+    <fieldset>
+      <legend>Información Personal</legend>
+      <!-- Campo de nombre -->
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
+      <p class="error-message" id="nombreError"></p>
+
+      <!-- Campo de correo electrónico -->
+      <label for="correo">Correo Electrónico</label>
+      <input type="email" id="correo" name="correo" placeholder="Correo electrónico" required>
+      <p class="error-message" id="correoError"></p>
+
+      <!-- Campo de teléfono -->
+      <label for="telefono">Teléfono</label>
+      <input type="text" id="telefono" name="telefono" placeholder="Teléfono" required>
+      <p class="error-message" id="telefonoError"></p>
+    </fieldset>
+
+    <!-- Credenciales -->
+    <fieldset>
+      <legend>Credenciales</legend>
+      <!-- Campo de nombre de usuario -->
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" name="usuario" placeholder="Usuario" required>
+      <p class="error-message" id="usuarioError"></p>
+
+      <!-- Campo de contraseña -->
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" placeholder="Contraseña" required>
+      <p class="error-message" id="passwordError"></p>
+    </fieldset>
+
+    <!-- Botón de registro -->
+    <button type="submit">Registrarse</button>
+  </form>
+  <p>¿Ya tienes cuenta? <a href="/login">Inicia Sesión</a></p>
+</div>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Evitar el envío del formulario por defecto
+
+    // Obtener los valores del formulario
+    const nombre = document.getElementById('nombre').value.trim();
+    const correo = document.getElementById('correo').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const usuario = document.getElementById('usuario').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    // Validar que todos los campos estén llenos
+    if (!nombre || !correo || !telefono || !usuario || !password) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+
+    // Crear un objeto con los datos del formulario
+    const formData = {
+      nombre: nombre,
+      correo: correo,
+      telefono: telefono,
+      usuario: usuario,
+      password: password
+    };
+
+    try {
+      // Enviar los datos al backend usando fetch
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        // Redirigir al login después de un registro exitoso
+        window.location.href = '/login?registroExitoso=true';
+      } else {
+        // Mostrar mensaje de error si algo falla
+        const data = await response.json();
+        alert(data.message || 'Error al registrar el usuario. Por favor, inténtalo de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ocurrió un error inesperado. Por favor, inténtalo más tarde.');
+    }
+  });
+</script>
+</body>
+</html>
